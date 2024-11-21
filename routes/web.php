@@ -20,8 +20,13 @@ Route::get('/dashboard', function () {
 });
 
 Route::get('/poblacion', function () {
-    return view('/pages/poblacion', ['title' => 'VacunApp | Población']);
+    return view('/pages/poblacion', ['title' => 'RutasUp | Crear ruta']);
 });
+
+Route::get('/plan-ruta', function () {
+    return view('/pages/rutas/route_planner', ['title' => 'RutasUp | Crear ruta']);
+});
+
 
 Route::get('/biblioteca', function () {
     return view('/pages/biblioteca', ['title' => 'VacunApp | Biblioteca']);

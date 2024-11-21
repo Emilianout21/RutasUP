@@ -1,109 +1,60 @@
-<x-base-layout :scrollspy="false">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Routing Example</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Planificador de Rutas con Leaflet</h1>
+    <div id="map"></div>
+    <button id="generate-route">Generar Ruta</button>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script>
+        // Inicializar el mapa
+        const map = L.map('map').setView([18.50012, -88.30039], 13); // Coordenadas iniciales
 
-    <x-slot:pageTitle>
-        {{$title}} 
-    </x-slot>
-
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <x-slot:headerFiles>
-        <!--  Aqui es donde se requieres poner los estilos  -->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-        <!--  END CUSTOM STYLE FILE  -->
-    </x-slot>
-    <!-- END GLOBAL MANDATORY STYLES -->
-
-    <div class="row layout-top-spacing">
-        <h3>Dashboard</h3>
-        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mt-3 mb-4 ms-auto">
-            <select class="form-select form-select" aria-label="Default select example">
-                <option selected="">Tipo de vacuna</option>
-                <option value="1">Electronics</option>
-                <option value="2">Clothing</option>
-                <option value="3">Accessories</option>
-            </select>
-        </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-3 mb-4">
-            <select class="form-select form-select" aria-label="Default select example">
-                <option selected="">Año</option>
-                <option value="1">Low to High Price</option>
-                <option value="2">Most Viewed</option>
-                <option value="3">Hight to Low Price</option>
-            </select>
-        </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-3 mb-4">
-            <select class="form-select form-select" aria-label="Default select example">
-                <option selected="">Municipio</option>
-                <option value="1">Low to High Price</option>
-                <option value="2">Most Viewed</option>
-                <option value="3">Hight to Low Price</option>
-            </select>
-        </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-3 mb-4">
-            <select class="form-select form-select" aria-label="Default select example">
-                <option selected="">Localidad</option>
-                <option value="1">Low to High Price</option>
-                <option value="2">Most Viewed</option>
-                <option value="3">Hight to Low Price</option>
-            </select>
-        </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-3 mb-4">
-            <select class="form-select form-select" aria-label="Default select example">
-                <option selected="">Colonia</option>
-                <option value="1">Low to High Price</option>
-                <option value="2">Most Viewed</option>
-                <option value="3">Hight to Low Price</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xl-12 col-lg-12 col-md-12">
-            <div id="map" style ="width: 100%; height: 60vh;"></div>
-        </div>
-    </div>
-
-    <!--  BEGIN CUSTOM SCRIPTS FILE  -->
-    <x-slot:footerFiles>
-        
-     <script>
-        // Inicializar el mapa centrado en Chetumal
-        var map = L.map('map').setView([18.50012, -88.29614], 13);
-
-        // Cargar y mostrar los mosaicos del mapa de OpenStreetMap
+        // Añadir capa de mapa base
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Datos de ejemplo con coordenadas y valores de cobertura
-        var locations = [
-            { lat: 18.50223, lng: -88.29817, coverage: 80 },
-            { lat: 18.49876, lng: -88.29368, coverage: 50 },
-            { lat: 18.50419, lng: -88.29045, coverage: 30 },
-            { lat: 18.50167, lng: -88.30230, coverage: 70 },
-            { lat: 18.49585, lng: -88.29502, coverage: 90 }
-        ];
+        let markers = []; // Array para almacenar marcadores
 
-        // Función para determinar el color del círculo basado en la cobertura
-        function getColor(coverage) {
-            return coverage > 75 ? 'red' :
-                   coverage > 50 ? 'yellow' :
-                   'green';
-        }
-
-        // Agregar círculos al mapa
-        locations.forEach(function(location) {
-            L.circle([location.lat, location.lng], {
-                color: getColor(location.coverage),
-                fillColor: getColor(location.coverage),
-                fillOpacity: 0.5,
-                radius: location.coverage * 10 // Ajustar el radio según la cobertura
-            }).addTo(map)
-              .bindPopup('Cobertura: ' + location.coverage + '%');
+        // Evento para añadir marcadores al mapa al hacer clic
+        map.on('click', function (e) {
+            const marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+            markers.push(marker); // Guardar marcador en el array
+            marker.bindPopup(Parada ${markers.length}).openPopup();
         });
 
-     </script>
+        // Configurar botón para generar la ruta
+        document.getElementById('generate-route').addEventListener('click', function () {
+            if (markers.length < 2) {
+                alert('Debes añadir al menos 2 paradas para generar una ruta.');
+                return;
+            }
 
-    </x-slot>
-    <!--  END CUSTOM SCRIPTS FILE  -->
-</x-base-layout>
+            // Obtener las coordenadas de los marcadores en orden
+            const waypoints = markers.map(marker => {
+                return L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
+            });
+
+            // Crear ruta con los waypoints
+            L.Routing.control({
+                waypoints: waypoints,
+                routeWhileDragging: true,
+                showAlternatives: false,
+                createMarker: function() { return null; } // Evitar marcadores adicionales
+            }).addTo(map);
+        });
+    </script>
+</body>
+</html>

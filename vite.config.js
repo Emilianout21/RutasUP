@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     plugins: [
@@ -40,7 +41,6 @@ export default defineConfig({
                 'resources/assets/js/widgets/_wOne.js',
                 'resources/assets/js/widgets/_wChartOne.js',
                 'resources/assets/js/widgets/_wChartTwo.js',
-                'resources/css/sweet.css',
                 'resources/scss/light/assets/authentication/auth-cover.scss',
                 'resources/scss/dark/assets/authentication/auth-cover.scss',
                 'resources/assets/js/widgets/_wActivityFour.js',
@@ -50,10 +50,7 @@ export default defineConfig({
                 'resources/scss/dark/plugins/filepond/custom-filepond.scss',
                 'resources/scss/light/plugins/notification/snackbar/custom-snackbar.scss',
                 'resources/scss/dark/assets/main.scss',
-                'resources/css/login.css',
-                'resources/js/login.js',
-                'resources/js/app.js',
-                'resources/css/login.css',
+                'resources/js/app.jsx',
             ],
             refresh: true,
         }),
